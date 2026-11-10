@@ -1,0 +1,36 @@
+{
+  "_comment": "Referência da entrada gerada no index.json (plugin market index format 1). O gerador noturno do awesome-dsh-plugin monta isto sozinho a partir do npm + YAML do catálogo; use para conferir campos, não para publicar direto.",
+  "name": "dsh-saldo-deepseek-harness",
+  "title": "wgrbiss-spec/dsh-saldo-deepseek-harness",
+  "description": {
+    "en": "Adds a SALDO DEEPSEEK HARNESS section to Settings that shows the connected DeepSeek account balance in yuan (CNY), with top-up and bonus wallets separated and the daily USD→CNY rate."
+  },
+  "homepage": "https://awesome-dsh-plugin.com/p/wgrbiss-spec/dsh-saldo-deepseek-harness/",
+  "repository": {
+    "url": "https://github.com/wgrbiss-spec/dsh-saldo-deepseek-harness"
+  },
+  "metadata": {
+    "category": "ui",
+    "keywords": [
+      "saldo",
+      "balance",
+      "cny",
+      "yuan",
+      "settings"
+    ],
+    "labels": [],
+    "sortKeys": {}
+  },
+  "versions": [
+    {
+      "version": "0.1.2",
+      "publishTimestamp": 1794000000,
+      "source": {
+        "type": "npm"
+      },
+      "engines": {
+        "dsh": ">=0.2.2-rc.1 <0.3.0-0"
+      }
+    }
+  ]
+}

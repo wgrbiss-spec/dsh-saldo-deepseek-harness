@@ -1,0 +1,67 @@
+{
+  "name": "dsh-saldo-deepseek-harness",
+  "version": "0.1.2",
+  "description": "SALDO DEEPSEEK HARNESS — mostra o saldo da conta DeepSeek em yuan (CNY) em Configurações, com recarga, bônus e cotação USD→CNY do dia. · Shows your DeepSeek account balance in yuan (CNY) inside Settings.",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./client": "./client/client.js",
+    "./icon": "./assets/icon.svg",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "src",
+    "client",
+    "assets",
+    "cordis.patch.yml",
+    "README.md",
+    "README.pt-BR.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node --test test/summary.test.mjs",
+    "validate": "node scripts/validate-package.mjs",
+    "prepack": "node scripts/validate-package.mjs",
+    "set-owner": "node scripts/set-owner.mjs",
+    "publish:npm": "node scripts/publish.mjs"
+  },
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek",
+    "deepseek-harness",
+    "balance",
+    "saldo",
+    "cny",
+    "yuan",
+    "settings"
+  ],
+  "icon": "./assets/icon.svg",
+  "license": "MIT",
+  "author": "wgrbiss-spec",
+  "homepage": "https://github.com/wgrbiss-spec/dsh-saldo-deepseek-harness#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wgrbiss-spec/dsh-saldo-deepseek-harness.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=22",
+    "dsh": ">=0.2.2-rc.1 <0.3.0-0"
+  },
+  "dsh": {
+    "manifestVersion": 1,
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-settings"
+      ]
+    }
+  }
+}

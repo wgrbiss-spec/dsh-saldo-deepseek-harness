@@ -1,0 +1,10 @@
+node_modules/
+*.tgz
+.dsh-test/
+.xdg-*/
+.pnpm-*/
+.pnpm-cache/
+dev/shots/
+npm-debug.log*
+.DS_Store
+.npm-cache/

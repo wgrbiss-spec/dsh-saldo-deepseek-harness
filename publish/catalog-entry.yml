@@ -1,0 +1,17 @@
+# Entrada do catálogo comunitário (awesome-dsh-plugin).
+#
+# Destino: data/plugins/wgrbiss-spec__dsh-saldo-deepseek-harness.yml no fork de
+# https://github.com/awesome-dsh-plugin/awesome-dsh-plugin
+#
+# Chaves permitidas pelo catálogo: url, name, category, description, icon, tarball.
+# Categorias válidas incluem: agi, ui, usage, theme, model, identity, session,
+# memory, tools, wsl, browser, vision, voice, docs, skill, workflow, git,
+# notify, dev, security, remote, market, fun.
+url: https://github.com/wgrbiss-spec/dsh-saldo-deepseek-harness
+name: wgrbiss-spec/dsh-saldo-deepseek-harness
+category: ui
+description:
+  en: 'Adds a SALDO DEEPSEEK HARNESS section to Settings that shows the connected DeepSeek account balance in yuan (CNY), with top-up and bonus wallets separated and the daily USD→CNY rate.'
+  zh: '在 DSH 设置中新增 SALDO DEEPSEEK HARNESS 页面，以人民币（CNY）显示已登录 DeepSeek 账户的余额，分别展示充值余额与赠送余额，并附每日 USD→CNY 汇率。'
+icon: https://raw.githubusercontent.com/wgrbiss-spec/dsh-saldo-deepseek-harness/main/assets/icon-180.png
+# tarball: https://github.com/wgrbiss-spec/dsh-saldo-deepseek-harness/releases/latest/download/dsh-saldo-deepseek-harness-0.1.2.tgz

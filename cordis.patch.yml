@@ -1,0 +1,21 @@
+# SALDO DEEPSEEK HARNESS — bundle patch layer.
+#
+# Instalar:
+#   dsh plugin --profile <perfil> add dsh-saldo-deepseek-harness
+#
+# O dsh plugin acrescenta o pacote a `dsh.profile.bundles` e este patch monta a
+# linha do plugin. Para ajustar a configuração, sobrescreva `config:` no
+# cordis.patch.yml do perfil:
+#
+#   - id: saldo-deepseek-harness
+#     config:
+#       balanceRefreshMs: 300000
+#       rateRefreshMs: 21600000
+- insert:
+    - id: saldo-deepseek-harness
+      name: dsh-saldo-deepseek-harness
+      config:
+        balanceRefreshMs: 300000
+        rateRefreshMs: 21600000
+        timeoutMs: 10000
+        forceCooldownMs: 2000
