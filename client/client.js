@@ -55,6 +55,12 @@ window.__ModuleLoader__.load({
       '.sdh_footer{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:0 2px}',
       '.sdh_footer_time{font-size:11px;line-height:16px;color:var(--dsw-alias-label-tertiary);font-variant-numeric:tabular-nums}',
       '.sdh_actions{display:flex;align-items:center;gap:8px}',
+      // Chip compacto no rodapé do compositor (slot conversation.composer.dock).
+      '.sdh_dock{display:inline-flex;align-items:center;gap:6px;height:22px;padding:0 9px;border-radius:999px;border:1px solid var(--dsw-alias-border-l2);background:var(--dsw-alias-bg-layer-2);color:var(--dsw-alias-label-secondary);font:inherit;font-size:12px;line-height:18px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap;cursor:default}',
+      '.sdh_dock_dot{width:6px;height:6px;border-radius:50%;flex:none;background:var(--dsw-alias-state-success-primary,#10b981);box-shadow:0 0 0 3px color-mix(in srgb,var(--dsw-alias-state-success-primary,#10b981) 14%,transparent)}',
+      '.sdh_dock_dot_warn{background:var(--dsw-alias-state-warn-primary,#f59e0b);box-shadow:0 0 0 3px color-mix(in srgb,var(--dsw-alias-state-warn-primary,#f59e0b) 14%,transparent)}',
+      '.sdh_dock_dot_error{background:var(--dsw-alias-state-error-primary,#ef4444);box-shadow:0 0 0 3px color-mix(in srgb,var(--dsw-alias-state-error-primary,#ef4444) 14%,transparent)}',
+      '.sdh_dock_value{letter-spacing:.01em}',
       '.sdh_btn{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px;border-radius:8px;border:1px solid var(--dsw-alias-border-l2);background:var(--dsw-alias-bg-layer-2);color:var(--dsw-alias-label-primary);font:inherit;font-size:12px;font-weight:500;cursor:pointer;transition:background .12s ease,border-color .12s ease}',
       '.sdh_btn:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover);border-color:var(--dsw-alias-label-dimmed)}',
       '.sdh_btn:disabled{cursor:default;opacity:.6}',
@@ -129,6 +135,15 @@ window.__ModuleLoader__.load({
         errorDesc: 'O último valor conhecido é mantido abaixo quando existe.',
         credentialsUnavailable: 'O cofre de credenciais do Harness não está disponível.',
         rateUnavailable: 'Cotação indisponível: os valores em USD aparecem sem conversão.',
+        dockLabel: 'Saldo DeepSeek',
+        dockAria: 'Saldo da conta DeepSeek em yuan',
+        dockRecharge: 'Recarga',
+        dockBonus: 'Bônus',
+        dockRate: 'Cotação',
+        dockUpdated: 'Atualizado em',
+        dockStale: 'valor mantido; a última consulta falhou',
+        dockError: 'não foi possível ler o saldo',
+        dockNoConversion: 'sem cotação para converter USD',
       },
       en: {
         nav: 'SALDO DEEPSEEK HARNESS',
@@ -161,6 +176,15 @@ window.__ModuleLoader__.load({
         errorDesc: 'The last known value is kept below when available.',
         credentialsUnavailable: 'The Harness credential store is not available.',
         rateUnavailable: 'Exchange rate unavailable: USD amounts are shown without conversion.',
+        dockLabel: 'DeepSeek balance',
+        dockAria: 'DeepSeek account balance in yuan',
+        dockRecharge: 'Top-up',
+        dockBonus: 'Bonus',
+        dockRate: 'Rate',
+        dockUpdated: 'Updated',
+        dockStale: 'kept value; the last refresh failed',
+        dockError: 'could not read the balance',
+        dockNoConversion: 'no rate to convert USD',
       },
     }
     //#endregion
@@ -253,6 +277,13 @@ window.__ModuleLoader__.load({
       const formatter = numberFormat(lang, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
       const amount = formatter !== null ? formatter.format(value) : value.toFixed(2)
       return lang === 'en' ? '$' + amount : 'US$ ' + amount
+    }
+
+    function formatCny(value, lang) {
+      if (!Number.isFinite(value)) return '—'
+      const formatter = numberFormat(lang, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+      const amount = formatter !== null ? formatter.format(value) : value.toFixed(2)
+      return '¥ ' + amount
     }
 
     function formatRate(value, lang) {
@@ -576,6 +607,84 @@ window.__ModuleLoader__.load({
     }
     //#endregion
 
+    //#region dock (saldo no rodapé do compositor)
+    const DOCK_POLL_MS = 60_000
+
+    /** Lê o resumo forçando uma consulta nova a cada minuto; mantém o último valor bom em caso de falha. */
+    function useDockSummary() {
+      const [state, setState] = react.useState({ data: null, error: null })
+      const alive = react.useRef(true)
+
+      react.useEffect(() => {
+        alive.current = true
+        const load = async () => {
+          if (typeof document !== 'undefined' && document.visibilityState === 'hidden') return
+          try {
+            const data = await readSummary(true)
+            if (alive.current) setState({ data, error: null })
+          } catch (error) {
+            if (alive.current) {
+              const message = error instanceof Error ? error.message : String(error)
+              setState((previous) => ({ data: previous.data, error: message }))
+            }
+          }
+        }
+        void load()
+        const timer = setInterval(load, DOCK_POLL_MS)
+        const onVisible = () => {
+          if (typeof document !== 'undefined' && document.visibilityState === 'visible') void load()
+        }
+        if (typeof document !== 'undefined') document.addEventListener('visibilitychange', onVisible)
+        return () => {
+          alive.current = false
+          clearInterval(timer)
+          if (typeof document !== 'undefined') document.removeEventListener('visibilitychange', onVisible)
+        }
+      }, [])
+
+      return state
+    }
+
+    function SaldoDock() {
+      const lang = useUi().lang
+      const c = COPY[lang]
+      const { data, error } = useDockSummary()
+      const converted = data !== null && data.balance !== null ? data.balance.converted : null
+      const cny = data !== null && data.balance !== null ? data.balance.cny : null
+      const total = converted !== null ? converted.totalCny : cny !== null ? cny.total : null
+      // Sem leitura utilizável: não ocupa espaço no rodapé.
+      if (data === null || !Number.isFinite(total)) return null
+
+      const stale = data.stale === true || error !== null
+      const failed = data.ok !== true
+      const tone = failed ? 'error' : stale ? 'warn' : 'ok'
+      const dotClass = tone === 'warn'
+        ? 'sdh_dock_dot sdh_dock_dot_warn'
+        : tone === 'error' ? 'sdh_dock_dot sdh_dock_dot_error' : 'sdh_dock_dot'
+      const rate = data.rate !== null && data.rate !== undefined && Number.isFinite(data.rate.usdCny)
+        ? c.dockRate + ' 1 USD = ' + formatRate(data.rate.usdCny, lang) + ' CNY'
+        : (converted === null ? c.dockNoConversion : null)
+      const title = [
+        c.dockLabel + ': ' + formatCny(total, lang),
+        c.dockRecharge + ' ' + formatCny(converted !== null ? converted.rechargeCny : cny.recharge, lang),
+        c.dockBonus + ' ' + formatCny(converted !== null ? converted.bonusCny : cny.bonus, lang),
+        rate,
+        Number.isFinite(data.fetchedAt) ? c.dockUpdated + ' ' + formatClock(data.fetchedAt, lang) : null,
+        stale ? c.dockStale : null,
+        failed && typeof data.error === 'string' ? c.dockError + ': ' + data.error : null,
+      ].filter(Boolean).join(' · ')
+
+      return h('span', {
+        className: 'sdh_dock',
+        role: 'status',
+        'aria-label': c.dockAria,
+        title,
+      },
+      h('span', { className: dotClass, 'aria-hidden': true }),
+      h('span', { className: 'sdh_dock_value' }, formatCny(total, lang)))
+    }
+    //#endregion
+
     //#region plugin
     function apply(ctx) {
       ensureStyles()
@@ -610,6 +719,14 @@ window.__ModuleLoader__.load({
         order: 120,
         label: () => COPY[ui.lang].nav,
       }, SaldoSection))
+
+      // Chip compacto no rodapé do compositor, ao lado de tok/s e cache.
+      ctx.slots.inject('conversation.composer.dock', () => ctx.slots.register({
+        name: 'conversation.composer.dock',
+        id: 'saldo-deepseek-harness-dock',
+        order: 120,
+        label: () => COPY[ui.lang].dockLabel,
+      }, SaldoDock))
     }
 
     exports.apply = apply

@@ -20,6 +20,7 @@ Adiciona uma seção própria, **SALDO DEEPSEEK HARNESS**, ao diálogo de Config
 - **Valores originais em USD** ao lado dos valores convertidos, junto com a cotação usada;
 - **Cartão da cotação do dia**: `1 USD = ¥ …`, horário de atualização do provedor e a fonte;
 - **Botão Atualizar** que força uma leitura nova (com cooldown de 2 s) e atualização automática a cada 5 minutos;
+- **Chip no rodapé do compositor**, ao lado de tok/s e cache: mostra o total em yuan e atualiza a cada 60 segundos; passar o mouse revela recarga, bônus, cotação e horário da leitura;
 - **Alternador de idioma no cabeçalho de Configurações**: dois botões **PORTUGUÊS / INGLÊS**. O idioma ativo fica desativado, o outro troca a página inteira e a preferência é lembrada; com esta seção aberta, eles ocupam o lugar do botão global "Abra o arquivo de configuração";
 - **Estados honestos**: conta desconectada, conta recusada, cotação indisponível, dados desatualizados — cada um explica o que aconteceu em vez de mostrar um zero falso.
 

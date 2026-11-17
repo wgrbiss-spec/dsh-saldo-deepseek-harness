@@ -1,7 +1,7 @@
 {
   "name": "dsh-saldo-deepseek-harness",
-  "version": "0.1.2",
-  "description": "SALDO DEEPSEEK HARNESS — mostra o saldo da conta DeepSeek em yuan (CNY) em Configurações, com recarga, bônus e cotação USD→CNY do dia. · Shows your DeepSeek account balance in yuan (CNY) inside Settings.",
+  "version": "0.1.3",
+  "description": "SALDO DEEPSEEK HARNESS — mostra o saldo da conta DeepSeek em yuan (CNY) em Configurações e num chip no rodapé do compositor, com recarga, bônus e cotação USD→CNY do dia. · Shows your DeepSeek account balance in yuan (CNY) inside Settings and as a composer footer chip.",
   "type": "module",
   "main": "src/index.js",
   "exports": {
@@ -60,7 +60,8 @@
     "client": {
       "platform": "web",
       "inject": [
-        "@deepseek-ai/dsh-client-ui-settings"
+        "@deepseek-ai/dsh-client-ui-settings",
+        "@deepseek-ai/dsh-client-ui-conversation"
       ]
     }
   }

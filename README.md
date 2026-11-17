@@ -24,6 +24,7 @@ It adds a dedicated **SALDO DEEPSEEK HARNESS** section to the Settings dialog an
 - **Original USD amounts** kept visible next to the converted values, with the rate that produced them;
 - **Daily exchange rate card**: `1 USD = ¥ …`, the provider update time and the source;
 - **Refresh button** that forces a fresh read (with a 2 s cooldown) plus a background auto-refresh every 5 minutes;
+- **Composer footer chip**, next to the tok/s and cache stats: shows the total in yuan and refreshes every 60 seconds; hovering reveals top-up, bonus, rate and read time;
 - **Language switch in the Settings header**: two buttons, **PORTUGUÊS / INGLÊS**. The active language is disabled, clicking the other one switches the whole page and the choice is remembered; while this section is open the buttons take the place of the global "Open configuration file" action;
 - **Honest states**: not connected, rejected account, rate unavailable, stale data — each says what happened instead of showing a fake zero.
 
